@@ -11,6 +11,7 @@ import { port, apiRoot } from "./config";
 
 
 const app = express();
+app.disable("x-powered-by");
 
 // parse application/json
 app.use(bodyParser.json());
