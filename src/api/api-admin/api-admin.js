@@ -1,6 +1,6 @@
-const buildApiAdmin = ({ apiAdminKey } = {}) => (req, res, next) => {
+const buildAdminApi = ({ adminApiKey } = {}) => (req, res, next) => {
   const apiKey = req.get("x-api-key");
-  const isAdmin = apiAdminKey && apiKey && apiAdminKey === apiKey;
+  const isAdmin = adminApiKey && apiKey && adminApiKey === apiKey;
   if (isAdmin) {
     next();
   } else {
@@ -8,4 +8,4 @@ const buildApiAdmin = ({ apiAdminKey } = {}) => (req, res, next) => {
   }
 };
 
-export default buildApiAdmin;
+export default buildAdminApi;

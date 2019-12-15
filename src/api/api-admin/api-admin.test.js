@@ -1,4 +1,4 @@
-import buildApiAdmin from "./api-admin";
+import buildAdminApi from "./api-admin";
 
 const expect401Response = ({ next, send }) => {
   expect(next.mock.calls).toHaveLength(0);
@@ -9,15 +9,15 @@ const expect401Response = ({ next, send }) => {
 };
 
 describe("api-admin", () => {
-  let apiAdminKey;
+  let adminApiKey;
   let apiAdmin;
   let next;
   let send;
   let res;
 
   beforeEach(() => {
-    apiAdminKey = "ABCD1234";
-    apiAdmin = buildApiAdmin({ apiAdminKey });
+    adminApiKey = "ABCD1234";
+    apiAdmin = buildAdminApi({ adminApiKey });
 
     next = jest.fn();
     send = jest.fn();
@@ -26,7 +26,7 @@ describe("api-admin", () => {
 
   it("calls next if the apiKey matches the adminApiKey", () => {
     const get = jest.fn();
-    get.mockReturnValueOnce(apiAdminKey);
+    get.mockReturnValueOnce(adminApiKey);
     const req = { get };
 
     apiAdmin(req, res, next);
@@ -62,10 +62,10 @@ describe("api-admin", () => {
 
   it("returns a 401 if the adminApiKey is missing", () => {
     const get = jest.fn();
-    get.mockReturnValueOnce(apiAdminKey);
+    get.mockReturnValueOnce(adminApiKey);
     const req = { get };
 
-    const newApiAdmin = buildApiAdmin();
+    const newApiAdmin = buildAdminApi();
     newApiAdmin(req, res, next);
 
     expect(next.mock.calls).toHaveLength(0);

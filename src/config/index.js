@@ -24,6 +24,7 @@ const config = {
     minPasswordLength: process.env.MIN_PWD_LENGTH || 10,
   },
   test: {
+    adminApiKey: process.env.ADMIN_API_KEY || "ABCD12345",
     mongo: {
       uri: process.env.MONGO_URI || "mongodb://localhost",
       dbName: process.env.MONGO_DBNAME || "jwt-user-auth-test",
@@ -34,6 +35,7 @@ const config = {
     },
   },
   development: {
+    adminApiKey: process.env.ADMIN_API_KEY || "ABCD12345",
     mongo: {
       uri: process.env.MONGO_URI || "mongodb://localhost",
       dbName: process.env.MONGO_DBNAME || "jwt-user-auth-dev",
@@ -44,6 +46,8 @@ const config = {
     },
   },
   production: {
+    adminApiKey: process.env.ADMIN_API_KEY || undefined,
+    apiKey: process.env.API_KEY || undefined,
     ip: process.env.IP || undefined,
     port: process.env.PORT || 8080,
   },
