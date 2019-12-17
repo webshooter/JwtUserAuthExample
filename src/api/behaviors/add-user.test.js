@@ -1,6 +1,4 @@
-// import faker from "faker";
-// import uuidv4 from "uuid/v4";
-import makeDb, { clearDb } from "../../../__test__/test-db";
+import makeDb, { clearDb, closeDb } from "../../../__test__/test-db";
 import fakeUserInfo from "../../../__test__/fake-user-info";
 import makeUsersDb, { collectionName } from "../db/users-db";
 import buildAddUser from "./add-user";
@@ -22,6 +20,10 @@ describe("create-user", () => {
 
   afterEach(async () => {
     await clearDb({ collectionName });
+  });
+
+  afterAll(async () => {
+    await closeDb();
   });
 
   it("adds a user to the database", async () => {
