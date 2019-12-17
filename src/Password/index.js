@@ -20,11 +20,11 @@ const makePassword = ({
   excludeSimilarCharacters,
 });
 
-const hashPassword = async ({ password }) => {
+const hashPassword = async ({ password, salt = 10 }) => {
   if (minPasswordLength > password.length) {
     throw new Error(`Password must be at least ${minPasswordLength} long`);
   }
-  return bcrypt.hash(password, 10);
+  return bcrypt.hash(password, salt);
 };
 
 const validatePassword = async ({
