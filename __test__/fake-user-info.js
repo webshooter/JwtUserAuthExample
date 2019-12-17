@@ -6,8 +6,10 @@ import Id from "../src/Id";
 import Password from "../src/Password";
 
 const fakeUserInfo = async (overrides = {}) => {
-  const password = await Password
-    .hashPassword({ password: faker.internet.password(10) });
+  const password = await Password.hashPassword({
+    password: faker.internet.password(10),
+    salt: 1,
+  });
 
   const makeHash = hashText => crypto
     .createHash("md5")
