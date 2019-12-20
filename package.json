@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=development nodemon --exec babel-node src/index.js",
     "test": "jest",
-    "sass": "sass --load-path=./node_modules/foundation-sites/scss --style=expanded ./src/scss:./public/css",
+    "sass": "sass --load-path=./node_modules/foundation-sites/assets --style=expanded ./src/scss:./public/css",
     "sass:compressed": "sass ./src/scss:./public/css --style=compressed",
     "prefix": "npm run sass && postcss ./public/css/app.css --use=autoprefixer --output=./public/css/app.css",
     "sass:watch": "onchange './src/scss/**/*.scss' -- npm run prefix"
