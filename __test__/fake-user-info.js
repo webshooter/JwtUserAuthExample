@@ -7,9 +7,16 @@ import Password from "../src/Password";
 
 const fakeUserInfo = async (overrides = {}) => {
   const password = await Password.hashPassword({
-    password: faker.internet.password(10),
+    password: overrides.password || faker.internet.password(10),
     salt: 1,
   });
+
+  // if test provides a "null" password, then do not delete
+  // otherwise testing will break
+  const modifiedOverrides = { ...overrides };
+  if (modifiedOverrides.password !== null) {
+    delete modifiedOverrides.password;
+  }
 
   const makeHash = hashText => crypto
     .createHash("md5")
@@ -35,7 +42,7 @@ const fakeUserInfo = async (overrides = {}) => {
   return {
     hash: makeHash(hashText),
     ...userInfo,
-    ...overrides,
+    ...modifiedOverrides,
   };
 };
 
