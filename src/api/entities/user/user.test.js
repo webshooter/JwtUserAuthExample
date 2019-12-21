@@ -104,4 +104,40 @@ describe("user", () => {
     expect(() => makeUser(userInfo))
       .toThrowError(new Error("User source must contain a valid ip"));
   });
+
+  describe("serialize", () => {
+    it("returns the id and email fields by default", async () => {
+      const userInfo = await fakeUserInfo();
+      const { serialize } = await makeUser(userInfo);
+      expect(serialize()).toMatchObject({
+        id: userInfo.id,
+        email: userInfo.email,
+      });
+    });
+    it("returns specified fields only", async () => {
+      const userInfo = await fakeUserInfo();
+      const { serialize } = await makeUser(userInfo);
+      expect(serialize([
+        "email",
+        "createdAt",
+        "updatedAt",
+      ])).toMatchObject({
+        email: userInfo.email,
+        createdAt: userInfo.createdAt,
+        updatedAt: userInfo.updatedAt,
+      });
+    });
+    it("never returns the password", async () => {
+      const userInfo = await fakeUserInfo();
+      const { serialize } = await makeUser(userInfo);
+      expect(serialize([
+        "password",
+        "createdAt",
+        "updatedAt",
+      ])).toMatchObject({
+        createdAt: userInfo.createdAt,
+        updatedAt: userInfo.updatedAt,
+      });
+    });
+  });
 });

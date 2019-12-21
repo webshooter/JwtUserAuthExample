@@ -18,6 +18,23 @@ const buildMakeUser = ({ Id, Email, makeHash, makeSource }) => ({
   const hashText = `${id}${email}${createdAt}${updatedAt}`;
   let hash;
 
+  const serialize = (fields = ["id", "email"]) => {
+    const userInfo = {
+      id,
+      email,
+      createdAt,
+      updatedAt,
+      hash: (hash || makeHash(hashText)),
+      source: userSource,
+    };
+    return fields.reduce((acc, field) => {
+      if (userInfo[field]) {
+        acc[field] = userInfo[field];
+      }
+      return acc;
+    }, {});
+  };
+
   return {
     getId: () => id,
     getEmail: () => email,
@@ -26,6 +43,7 @@ const buildMakeUser = ({ Id, Email, makeHash, makeSource }) => ({
     getCreatedAt: () => createdAt,
     getUpdatedAt: () => updatedAt,
     getHash: () => (hash || makeHash(hashText)),
+    serialize,
   };
 };
 
