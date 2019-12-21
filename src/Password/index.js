@@ -22,7 +22,7 @@ const makePassword = ({
 
 const hashPassword = async ({ password, salt = 10 }) => {
   if (minPasswordLength > password.length) {
-    throw new Error(`Password must be at least ${minPasswordLength} long`);
+    throw new Error(`Password must be at least ${minPasswordLength} characters long`);
   }
   return bcrypt.hash(password, salt);
 };
