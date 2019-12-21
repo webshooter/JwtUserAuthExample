@@ -1,5 +1,4 @@
 import faker from "faker";
-import uuidv4 from "uuid/v4";
 import makePostUser from "./post-user";
 import { addUser } from "../behaviors";
 
