@@ -40,7 +40,7 @@ describe("login-user", () => {
   describe("when credentials are valid", () => {
     it("returns a user id, email and token in the response", async () => {
       const password = "good-password";
-      const userInfo = await fakeUserInfo({ password });
+      const userInfo = await fakeUserInfo({ overrides: { password } });
       const user = { _id: userInfo.id, ...userInfo };
       delete user.id;
       await db

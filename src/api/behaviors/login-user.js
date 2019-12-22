@@ -13,7 +13,7 @@ const buildLoginUser = ({ findUserById, validatePassword }) => async ({ id, pass
   });
 
   if (isValidPassword) {
-    const user = makeUser(userInfo);
+    const user = await makeUser(userInfo);
     return {
       user: user.serialize(),
       token: "token", // TODO: create valid jwt here

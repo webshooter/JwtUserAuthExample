@@ -33,11 +33,10 @@ describe("user", () => {
   });
 
   it("creates a user", async () => {
-    const userInfo = await fakeUserInfo();
+    const userInfo = await fakeUserInfo({ hashPassword: false });
     const {
       getId,
       getEmail,
-      getPassword,
       getSource,
       getCreatedAt,
       getUpdatedAt,
@@ -49,13 +48,24 @@ describe("user", () => {
 
     expect(Id.isValid(getId())).toBe(true);
     expect(getEmail()).toBe(userInfo.email);
-    expect(getPassword()).toBe(userInfo.password);
     expect(source.getIp()).toBe(userInfo.source.ip);
     expect(source.getBrowser()).toBe(userInfo.source.browser);
     expect(source.getReferrer()).toBe(userInfo.source.referrer);
     expect(getCreatedAt()).toBeLessThanOrEqual(Date.now());
     expect(getUpdatedAt()).toBeLessThanOrEqual(Date.now());
     expect(getHash()).toBe(makeHash(hashText));
+  });
+
+  it("generates and stores the correct password hash", async () => {
+    const userInfo = await fakeUserInfo({ hashPassword: false });
+    const { getPassword } = await makeUser(userInfo);
+
+    const isValidPassword = await Password.validatePassword({
+      password: userInfo.password,
+      passwordHash: getPassword(),
+    });
+
+    expect(isValidPassword).toBe(true);
   });
 
   it("adds createdAt when user is created", async () => {
@@ -71,37 +81,45 @@ describe("user", () => {
   });
 
   it("throws an error if email is invalid", async () => {
-    const userInfo = await fakeUserInfo({ email: null });
-    expect(() => makeUser(userInfo))
+    const userInfo = await fakeUserInfo({ overrides: { email: null } });
+    await expect(makeUser(userInfo))
+      .rejects
       .toThrowError(new Error("User requires a valid email"));
   });
 
   it("throws an error if password is invalid", async () => {
-    const userInfo = await fakeUserInfo({ password: null });
-    expect(() => makeUser(userInfo))
+    const userInfo = await fakeUserInfo({ overrides: { password: null } });
+    await expect(makeUser(userInfo))
+      .rejects
       .toThrowError(new Error("User requires a valid password"));
   });
 
   it("throws an error if source.ip is missing", async () => {
     const userInfo = await fakeUserInfo({
-      source: {
-        browser: faker.internet.userAgent(),
-        referrer: faker.internet.url(),
+      overrides: {
+        source: {
+          browser: faker.internet.userAgent(),
+          referrer: faker.internet.url(),
+        },
       },
     });
-    expect(() => makeUser(userInfo))
+    expect(makeUser(userInfo))
+      .rejects
       .toThrowError(new Error("User source must contain an ip"));
   });
 
   it("throws an error if source.ip is invalid", async () => {
     const userInfo = await fakeUserInfo({
-      source: {
-        ip: "not an ip",
-        browser: faker.internet.userAgent(),
-        referrer: faker.internet.url(),
+      overrides: {
+        source: {
+          ip: "not an ip",
+          browser: faker.internet.userAgent(),
+          referrer: faker.internet.url(),
+        },
       },
     });
-    expect(() => makeUser(userInfo))
+    expect(makeUser(userInfo))
+      .rejects
       .toThrowError(new Error("User source must contain a valid ip"));
   });
 

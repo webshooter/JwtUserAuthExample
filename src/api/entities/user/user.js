@@ -1,4 +1,4 @@
-const buildMakeUser = ({ Id, Email, makeHash, makeSource }) => ({
+const buildMakeUser = ({ Id, Email, Password, makeHash, makeSource }) => async ({
   id = Id.makeId(),
   email,
   password,
@@ -14,6 +14,7 @@ const buildMakeUser = ({ Id, Email, makeHash, makeSource }) => ({
     throw new Error("User requires a valid password");
   }
 
+  const hashedPassword = await Password.hashPassword({ password });
   const userSource = makeSource(source);
   const hashText = `${id}${email}${createdAt}${updatedAt}`;
   let hash;
@@ -38,7 +39,7 @@ const buildMakeUser = ({ Id, Email, makeHash, makeSource }) => ({
   return {
     getId: () => id,
     getEmail: () => email,
-    getPassword: () => password,
+    getPassword: () => hashedPassword,
     getSource: () => userSource,
     getCreatedAt: () => createdAt,
     getUpdatedAt: () => updatedAt,

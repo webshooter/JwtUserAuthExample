@@ -5,13 +5,20 @@ import crypto from "crypto";
 import Id from "../src/Id";
 import Password from "../src/Password";
 
-const fakeUserInfo = async (overrides = {}) => {
-  const password = await Password.hashPassword({
-    password: overrides.password || faker.internet.password(10),
-    salt: 1,
-  });
+const fakeUserInfo = async ({ overrides = {}, hashPassword = true } = {}) => {
+  const passwordCandidate = overrides.password || faker.internet.password(10);
+  const password = hashPassword
+    // fakeUserInfo to be used as if from the db
+    // with a hashed password
+    ? await Password.hashPassword({
+      password: passwordCandidate,
+      salt: 1,
+    })
+    // or fakeUserInfo will be used to create a new user
+    // so don't hash password
+    : passwordCandidate;
 
-  // if test provides a "null" password, then do not delete
+  // if test provides a "null" password, then don't delete
   // otherwise testing will break
   const modifiedOverrides = { ...overrides };
   if (modifiedOverrides.password !== null) {

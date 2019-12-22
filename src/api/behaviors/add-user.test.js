@@ -1,9 +1,10 @@
 import makeDb, { clearDb, closeDb } from "../../../__test__/test-db";
 import fakeUserInfo from "../../../__test__/fake-user-info";
+import Password from "../../Password";
 import makeUsersDb, { collectionName } from "../db/users-db";
 import buildAddUser from "./add-user";
 
-describe("create-user", () => {
+describe("add-user", () => {
   let db;
   let usersDb;
   let addUser;
@@ -27,8 +28,17 @@ describe("create-user", () => {
   });
 
   it("adds a user to the database", async () => {
-    const userInfo = await fakeUserInfo();
+    const userInfo = await fakeUserInfo({ hashPassword: false });
     const added = await addUser(userInfo);
+
+    const isValidPaswordHash = await Password.validatePassword({
+      password: userInfo.password,
+      passwordHash: added.password,
+    });
+    expect(isValidPaswordHash).toBe(true);
+
+    delete userInfo.password;
+    delete added.password;
     expect(added).toMatchObject(userInfo);
   });
 
@@ -41,8 +51,14 @@ describe("create-user", () => {
     delete insertData.id;
     await db.collection(collectionName).insertOne(insertData);
 
-    const userInfo = await fakeUserInfo({ id: userInfoExisting.id });
+    const userInfo = await fakeUserInfo({
+      overrides: {
+        id: userInfoExisting.id,
+      },
+    });
     const added = await addUser(userInfo);
+    delete userInfoExisting.password;
+    delete added.password;
     expect(added).toMatchObject(userInfoExisting);
   });
 
@@ -55,8 +71,14 @@ describe("create-user", () => {
     delete insertData.id;
     await db.collection(collectionName).insertOne(insertData);
 
-    const userInfo = await fakeUserInfo({ email: userInfoExisting.email });
+    const userInfo = await fakeUserInfo({
+      overrides: {
+        email: userInfoExisting.email,
+      },
+    });
     const added = await addUser(userInfo);
+    delete userInfoExisting.password;
+    delete added.password;
     expect(added).toMatchObject(userInfoExisting);
   });
 });
