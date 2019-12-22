@@ -5,7 +5,11 @@ import logger from "./logger";
 import makeCallback from "./express-callback";
 import userAuth from "./api/user-auth";
 import adminApi from "./api/api-admin";
-import { getChonk, postUser } from "./api/controllers";
+import {
+  getChonk,
+  postUser,
+  postApiAuth,
+} from "./api/controllers";
 import {
   homeController,
   loginController,
@@ -40,8 +44,9 @@ app.get(loginRoute.path, loginController);
 app.get(profileRoute.path, profileController);
 
 // api routing
-app.get(`${apiRoot}`, userAuth, (req, res) => res.send("JWTUserAuth Example App API!"));
-app.post(`${apiRoot}`, userAuth, (req, res) => res.send("JWTUserAuth Example App API!"));
+app.get(`${apiRoot}`, userAuth, (_req, res) => res.send("JWTUserAuth Example App API!"));
+app.post(`${apiRoot}/auth`, makeCallback(postApiAuth));
+app.post(`${apiRoot}`, userAuth, (_req, res) => res.send("JWTUserAuth Example App API!"));
 app.post(`${apiRoot}/chonk`, userAuth, makeCallback(getChonk));
 app.post(`${apiRoot}/users`, adminApi, userAuth, makeCallback(postUser));
 
