@@ -9,7 +9,7 @@ const makeApiAuth = ({ loginUser }) => async httpRequest => {
   let responseBody = { error: "Please check credentials" };
 
   try {
-    const { user: id, password } = httpRequest.body;
+    const { id, password } = httpRequest.body;
     const user = await loginUser({ id, password });
 
     if (user) {

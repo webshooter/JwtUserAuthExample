@@ -10,7 +10,7 @@ describe("api-auth", () => {
       const httpRequest = {
         body: {
           password,
-          user: fakeUser.id,
+          id: fakeUser.id,
         },
       };
       const mockResponse = {
@@ -32,7 +32,7 @@ describe("api-auth", () => {
     it("returns a 401 status code and an error message", async () => {
       const httpRequest = {
         body: {
-          user: faker.random.uuid(),
+          id: faker.random.uuid(),
           password: faker.random.word(),
         },
       };
